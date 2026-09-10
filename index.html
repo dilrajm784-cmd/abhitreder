@@ -16,7 +16,6 @@
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
       
-      // Replace with your Meta Pixel ID
       fbq('init', '1015900414772997'); 
       fbq('track', 'PageView');
     </script>
@@ -200,7 +199,7 @@
             padding: 15px;
             border-radius: 50px;
             box-shadow: 0 0 20px rgba(0, 180, 216, 0.45);
-            margin-bottom: 18px;
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
             transition: transform 0.15s ease-in-out;
             cursor: pointer;
@@ -208,6 +207,15 @@
 
         .cta-btn:active {
             transform: scale(0.97);
+        }
+
+        /* Instruction Note Below CTA */
+        .cta-note {
+            font-size: 11px;
+            color: #ffeb3b;
+            font-weight: 600;
+            margin-bottom: 18px;
+            line-height: 1.3;
         }
 
         /* Featured Box */
@@ -414,9 +422,12 @@
         </div>
 
         <!-- Main CTA Button -->
-        <a id="telegramLink" href="https://t.me/+KZ4XEXJJT2xjODE1" target="_blank" rel="noopener noreferrer" class="cta-btn" onclick="trackEvents(event)">
+        <a id="telegramLink" href="https://t.me/+KZ4XEXJJT2xjODE1" class="cta-btn" onclick="trackEvents(event)">
             ✈️ मोफत Channel Join करा!
         </a>
+        <div class="cta-note">
+            ⚠️ Button dabane ke baad Telegram app me "Request to Join" zaroor karein.
+        </div>
 
         <!-- Highlight Callout Box -->
         <div class="featured-box">
@@ -503,23 +514,28 @@
 
     </div>
 
-    <!-- DEDUPLICATED SMART TRACKING SCRIPT -->
+    <!-- SMART TRACKING WITH DELAYED REDIRECT -->
     <script>
         function trackEvents(event) {
+            event.preventDefault(); // Browser ko turant open hone se rokta hai
+            var targetUrl = event.currentTarget.getAttribute('href');
+
             try {
                 var isAlreadyTracked = localStorage.getItem('meta_lead_fired');
-                
                 if (!isAlreadyTracked) {
                     if (typeof fbq !== 'undefined') {
                         fbq('track', 'Lead');
                         localStorage.setItem('meta_lead_fired', 'true');
                     }
-                } else {
-                    console.log("Duplicate click ignored to prevent fake/repeated pixel tracking.");
                 }
             } catch (err) {
-                console.log("Tracking execution finished.");
+                console.log("Tracking error logged.");
             }
+
+            // 300ms delay to let Meta Pixel complete event tracking
+            setTimeout(function() {
+                window.open(targetUrl, '_blank');
+            }, 300);
         }
     </script>
 
